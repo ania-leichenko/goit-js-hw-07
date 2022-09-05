@@ -1,4 +1,4 @@
-import { galleryItems } from './gallery-items.js';
+import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 const galleryContainer = document.querySelector(".gallery");
 const images = createItemsMarkup(galleryItems);
@@ -25,12 +25,21 @@ galleryContainer.addEventListener("click", getImage);
 
 function getImage(e) {
   e.preventDefault();
-  
+
   if (e.target.classList.contains("gallery")) return;
   const source = e.target.dataset.source;
 
   const instance = basicLightbox.create(`
-    <img src="${source}"width="800" height="600">`);
+    <img src="${source}"width="800" height="600">`, {
+        onShow: () => window.addEventListener("keydown", onEsc),
+        onClose: () => window.removeEventListener("keydown", onEsc)
+    });
+
+    function onEsc(event) {
+      if (event.keyCode === 27) {
+        instance.close();
+      }
+    }
 
   instance.show();
-};
+}
